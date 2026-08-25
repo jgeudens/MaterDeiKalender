@@ -1,0 +1,18 @@
+{
+  "name": "materdeikalender",
+  "version": "1.0.0",
+  "description": "Jaarkalender van de schoolkalender van Mater Dei (OZCS Vorselaar), automatisch omgezet uit de gepubliceerde Outlook-kalender. Wordt bij elke pagina-load opnieuw opgehaald en geparsed, en is printbaar op 2 A4-bladen.",
+  "private": true,
+  "scripts": {
+    "postinstall": "node scripts/copy-vendor.js",
+    "build": "node scripts/copy-vendor.js",
+    "start": "http-server public -p 8080 -c-1"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ical.js": "^2.1.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

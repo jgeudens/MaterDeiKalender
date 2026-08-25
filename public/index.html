@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jaarkalender Mater Dei</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header id="header" class="header"></header>
+
+    <div class="no-print toolbar">
+      <button id="print-knop" type="button">Afdrukken</button>
+    </div>
+
+    <main id="maanden" class="maanden"></main>
+
+    <script type="module" src="js/app.js"></script>
+    <script>
+      document.getElementById("print-knop").addEventListener("click", () => window.print());
+    </script>
+  </body>
+</html>
