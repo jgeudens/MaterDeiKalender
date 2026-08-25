@@ -1,7 +1,9 @@
-// Bouwt uit een platte lijst events een structuur van 10 maandkalendertjes
-// (weken starten op maandag, zoals gebruikelijk in België).
+// Bouwt uit een platte lijst events een structuur van 10 maanden, elk als een
+// lijst van dagen (dag-per-rij weergave, geen weekrooster).
 
 import { bepaalSchooljaarMaanden, naamVanMaand } from "./config.js";
+
+const WEEKDAG_KORT = ["zo", "ma", "di", "wo", "do", "vr", "za"]; // getDay(): 0 = zondag
 
 function isZelfdeDag(a, b) {
   return (
@@ -11,27 +13,18 @@ function isZelfdeDag(a, b) {
   );
 }
 
-function maakDagenRaster(jaar, maandIndex1Based) {
-  const eersteVanMaand = new Date(jaar, maandIndex1Based - 1, 1);
-  const laatsteVanMaand = new Date(jaar, maandIndex1Based, 0);
-  const aantalDagen = laatsteVanMaand.getDate();
-
-  // getDay(): 0 = zondag ... 6 = zaterdag. We willen maandag = 0.
-  const startOffset = (eersteVanMaand.getDay() + 6) % 7;
-
+function maakDagenLijst(jaar, maandIndex1Based) {
+  const aantalDagen = new Date(jaar, maandIndex1Based, 0).getDate();
   const dagen = [];
-  for (let i = 0; i < startOffset; i++) {
-    dagen.push(null); // lege cel vóór de 1e van de maand
-  }
   for (let dagNr = 1; dagNr <= aantalDagen; dagNr++) {
+    const datum = new Date(jaar, maandIndex1Based - 1, dagNr);
     dagen.push({
-      datum: new Date(jaar, maandIndex1Based - 1, dagNr),
+      datum,
       dagNr,
+      weekdagKort: WEEKDAG_KORT[datum.getDay()],
+      isWeekend: datum.getDay() === 0 || datum.getDay() === 6,
       events: [],
     });
-  }
-  while (dagen.length % 7 !== 0) {
-    dagen.push(null); // lege cel na de laatste dag van de maand
   }
   return dagen;
 }
@@ -53,7 +46,6 @@ function voegEventToeAanDagen(dagen, event) {
   );
 
   for (const dag of dagen) {
-    if (!dag) continue;
     if (dag.datum >= eventStartDag && dag.datum <= eventEindDag) {
       dag.events.push(event);
     }
@@ -64,7 +56,7 @@ export function bouwSchooljaarKalender(events, vandaag = new Date()) {
   const maanden = bepaalSchooljaarMaanden(vandaag);
 
   return maanden.map(({ maand, jaar }) => {
-    const dagen = maakDagenRaster(jaar, maand);
+    const dagen = maakDagenLijst(jaar, maand);
 
     for (const event of events) {
       // Snelle voorfilter: event moet (een deel van) deze maand raken.
@@ -75,7 +67,7 @@ export function bouwSchooljaarKalender(events, vandaag = new Date()) {
     }
 
     for (const dag of dagen) {
-      if (dag && isZelfdeDag(dag.datum, vandaag)) {
+      if (isZelfdeDag(dag.datum, vandaag)) {
         dag.isVandaag = true;
       }
     }

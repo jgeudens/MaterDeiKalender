@@ -1,6 +1,7 @@
-// Rendert de header (met huidige datum) en de 10 maandkaarten in de DOM.
+// Rendert de header (met huidige datum) en de 10 maanden (dagen als rijen,
+// verdeeld over 2 "pagina's" van elk 5 maanden in 2 kolommen) in de DOM.
 
-const WEEKDAG_KOPPEN = ["ma", "di", "wo", "do", "vr", "za", "zo"];
+const MAANDEN_PER_PAGINA = 5;
 
 function formatteerHuidigeDatumTijd(datum) {
   return datum.toLocaleString("nl-BE", {
@@ -20,48 +21,58 @@ export function renderHeader(container, vandaag) {
   `;
 }
 
-function renderDagCel(dag) {
-  if (!dag) return `<div class="dag dag--leeg"></div>`;
-
-  const eventsHtml = dag.events
-    .map((event) => `<span class="event-titel" title="${escapeHtml(event.titel)}">${escapeHtml(event.titel)}</span>`)
-    .join("");
-
-  const klassen = ["dag"];
-  if (dag.isVandaag) klassen.push("dag--vandaag");
-  if (dag.events.length > 0) klassen.push("dag--met-events");
-
-  return `
-    <div class="${klassen.join(" ")}">
-      <span class="dag-nr">${dag.dagNr}</span>
-      <div class="dag-events">${eventsHtml}</div>
-    </div>
-  `;
-}
-
 function escapeHtml(tekst) {
   const div = document.createElement("div");
   div.textContent = tekst;
   return div.innerHTML;
 }
 
+function renderDagRij(dag) {
+  const eventTekst = dag.events.map((event) => escapeHtml(event.titel)).join("; ");
+
+  const klassen = ["dag-rij"];
+  if (dag.isVandaag) klassen.push("dag-rij--vandaag");
+  if (dag.isWeekend) klassen.push("dag-rij--weekend");
+  if (dag.events.length > 0) klassen.push("dag-rij--met-events");
+
+  return `
+    <div class="${klassen.join(" ")}">
+      <span class="dag-nr">${dag.dagNr}</span>
+      <span class="dag-weekdag">${dag.weekdagKort}</span>
+      <span class="dag-events">${eventTekst}</span>
+    </div>
+  `;
+}
+
 function renderMaandKaart(maand) {
-  const weekdagKoppenHtml = WEEKDAG_KOPPEN.map((wd) => `<div class="weekdag-kop">${wd}</div>`).join("");
-  const dagenHtml = maand.dagen.map(renderDagCel).join("");
+  const dagenHtml = maand.dagen.map(renderDagRij).join("");
 
   return `
     <section class="maand">
       <h2 class="maand-titel">${maand.naam} ${maand.jaar}</h2>
-      <div class="maand-raster">
-        ${weekdagKoppenHtml}
+      <div class="dagenlijst">
         ${dagenHtml}
       </div>
     </section>
   `;
 }
 
+function renderPagina(maanden, extraKlasse) {
+  const klassen = ["print-pagina"];
+  if (extraKlasse) klassen.push(extraKlasse);
+  return `
+    <div class="${klassen.join(" ")}">
+      ${maanden.map(renderMaandKaart).join("")}
+    </div>
+  `;
+}
+
 export function renderMaanden(container, maanden) {
-  container.innerHTML = maanden.map(renderMaandKaart).join("");
+  const eerstePagina = maanden.slice(0, MAANDEN_PER_PAGINA);
+  const tweedePagina = maanden.slice(MAANDEN_PER_PAGINA);
+
+  container.innerHTML =
+    renderPagina(eerstePagina) + renderPagina(tweedePagina, "print-pagina--tweede");
 }
 
 export function renderFout(container, foutmelding) {
