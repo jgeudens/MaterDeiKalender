@@ -2,7 +2,7 @@
 // Pas GEPUBLICEERDE_KALENDER_URL aan als de school een andere Outlook-link publiceert.
 
 const GEPUBLICEERDE_KALENDER_URL =
-  "https://outlook.office365.com/calendar/published/9c33be671c99409ab82cabd21ee28279@ozcsvorselaar.be/96af7dec4efa40269c02d75908d63ac07805844575790904765/calendar.html";
+  "https://outlook.office365.com/owa/calendar/9c33be671c99409ab82cabd21ee28279@ozcsvorselaar.be/96af7dec4efa40269c02d75908d63ac07805844575790904765/calendar.html";
 
 // Outlook publiceert naast de .html-weergave altijd ook een .ics-feed op hetzelfde pad.
 export const ICS_URL = GEPUBLICEERDE_KALENDER_URL.replace(/calendar\.html$/, "calendar.ics");
@@ -11,7 +11,7 @@ export const ICS_URL = GEPUBLICEERDE_KALENDER_URL.replace(/calendar\.html$/, "ca
 // rechtstreekse fetch() vanuit de browser kan mislukken. Als fallback gebruiken we
 // een publieke CORS-proxy. Zet op "" om de fallback uit te schakelen, of vervang
 // door een eigen proxy als de gratis dienst onbetrouwbaar blijkt.
-export const CORS_PROXY = "https://api.allorigins.win/raw?url=";
+export const CORS_PROXY = "https://cors.eu.org/";
 
 // Het schooljaar loopt van september tot en met juni (geen juli/augustus): 10 maanden.
 export const SCHOOLJAAR_START_MAAND = 9; // september (1 = januari)
