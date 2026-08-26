@@ -1,4 +1,4 @@
-import { ICS_URL, CORS_PROXY, bepaalSchooljaarBereik } from "./config.js";
+import { ICS_URL, CORS_PROXIES, bepaalSchooljaarBereik } from "./config.js";
 import { haalEventsOp } from "./icsParser.js";
 import { bouwSchooljaarKalender } from "./calendarBuilder.js";
 import { renderHeader, renderMaanden, renderFout } from "./render.js";
@@ -14,7 +14,7 @@ async function init() {
   try {
     const { start, eind } = bepaalSchooljaarBereik(vandaag);
     // Geen caching: bij elke pageload wordt de feed vers opgehaald en geparsed.
-    const events = await haalEventsOp(ICS_URL, CORS_PROXY, start, eind);
+    const events = await haalEventsOp(ICS_URL, CORS_PROXIES, start, eind);
     const maanden = bouwSchooljaarKalender(events, vandaag);
     renderMaanden(maandenEl, maanden);
   } catch (fout) {

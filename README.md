@@ -41,12 +41,14 @@ build-stap** nodig: de website is gewone HTML/CSS/JS.
 
 Gepubliceerde Outlook-kalenders zetten niet altijd CORS-headers, waardoor een
 rechtstreekse `fetch()` vanuit de browser kan mislukken. De app probeert
-eerst een directe fetch, en valt bij falen terug op een publieke CORS-proxy
-(`CORS_PROXY` in `config.js`). Als die gratis proxy onbetrouwbaar blijkt,
-kan je:
+eerst een directe fetch, en valt bij falen terug op een reeks publieke
+CORS-proxy's (`CORS_PROXIES` in `config.js`), na elkaar geprobeerd tot er één
+lukt. Gratis proxy's vallen wel eens uit of raten (HTTP 429 e.d.), dus met
+meerdere opties blijft de kalender werken zolang er minstens één beschikbaar
+is. Als geen enkele meer werkt, kan je:
 
-- de waarde van `CORS_PROXY` vervangen door een andere proxy-dienst, of
-- `CORS_PROXY` op `""` zetten en zelf een kleine proxy (bv. een serverless
+- de lijst in `CORS_PROXIES` aanvullen of vervangen door andere proxy-diensten, of
+- `CORS_PROXIES` op `[]` zetten en zelf een kleine proxy (bv. een serverless
   function) opzetten die de `.ics`-feed doorgeeft.
 
 Als beide pogingen mislukken, toont de pagina een duidelijke Nederlandstalige
