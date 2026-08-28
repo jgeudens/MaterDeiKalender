@@ -18,6 +18,14 @@ export function renderHeader(container, vandaag) {
   container.innerHTML = `
     <h1>Jaarkalender Mater Dei</h1>
     <p class="bijgewerkt">Bijgewerkt op: <strong>${formatteerHuidigeDatumTijd(vandaag)}</strong></p>
+    <p class="disclaimer">
+      Dit is een onofficiële, automatisch samengestelde kalender en staat niet
+      in verbinding met en is niet goedgekeurd door basisschool Mater Dei.
+      De gegevens weerspiegelen enkel de officiële schoolkalender op het
+      moment van raadplegen/afdrukken en kunnen nadien gewijzigd zijn. Er
+      wordt geen enkele garantie geboden op volledigheid of correctheid —
+      raadpleeg steeds de officiële kanalen van de school.
+    </p>
   `;
 }
 
