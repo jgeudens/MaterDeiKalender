@@ -52,6 +52,20 @@ body {
   color: #555;
 }
 
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.footer-tekst {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
 .foutmelding {
   color: var(--kleur-fout);
   border: 1px solid var(--kleur-fout);

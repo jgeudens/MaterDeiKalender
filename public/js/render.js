@@ -19,8 +19,7 @@ export function renderHeader(container, vandaag) {
     <h1>Jaarkalender Mater Dei</h1>
     <p class="bijgewerkt">Bijgewerkt op: <strong>${formatteerHuidigeDatumTijd(vandaag)}</strong></p>
     <p class="disclaimer">
-      Dit is een onofficiële, automatisch samengestelde kalender en staat niet
-      in verbinding met en is niet goedgekeurd door basisschool Mater Dei.
+      Dit is een onofficiële, automatisch samengestelde kalender en is niet goedgekeurd door basisschool Mater Dei.
       De gegevens weerspiegelen enkel de officiële schoolkalender op het
       moment van raadplegen/afdrukken en kunnen nadien gewijzigd zijn. Er
       wordt geen enkele garantie geboden op volledigheid of correctheid —
@@ -81,6 +80,34 @@ export function renderMaanden(container, maanden) {
 
   container.innerHTML =
     renderPagina(eerstePagina) + renderPagina(tweedePagina, "print-pagina--tweede");
+}
+
+const MAKER_EMAIL = "info@synvis.net";
+
+function tekenEmailOpCanvas(canvas) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const breedte = 130;
+  const hoogte = 16;
+  canvas.width = breedte * dpr;
+  canvas.height = hoogte * dpr;
+  canvas.style.width = `${breedte}px`;
+  canvas.style.height = `${hoogte}px`;
+  ctx.scale(dpr, dpr);
+  ctx.font = "600 12px system-ui, sans-serif";
+  ctx.fillStyle = "#6b7280";
+  ctx.textBaseline = "middle";
+  // Op canvas getekend (niet als tekst in de DOM aanwezig) om buiten het bereik van scrapers te blijven.
+  ctx.fillText(MAKER_EMAIL, 0, hoogte / 2 + 1);
+}
+
+export function renderFooter(container) {
+  container.innerHTML = `
+    <p class="footer-tekst">Pagina gemaakt door Jens Geudens &mdash; <canvas class="footer-email"></canvas></p>
+  `;
+  tekenEmailOpCanvas(container.querySelector(".footer-email"));
 }
 
 export function renderFout(container, foutmelding) {
