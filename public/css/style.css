@@ -25,9 +25,17 @@ body {
 }
 
 .header .bijgewerkt {
-  margin: 0 0 1rem;
+  margin: 0 0 0.4rem;
   color: #555;
   font-size: 0.9rem;
+}
+
+.header .disclaimer {
+  margin: 0 0 1rem;
+  color: #777;
+  font-size: 0.7rem;
+  font-style: italic;
+  max-width: 55rem;
 }
 
 .toolbar {
@@ -147,8 +155,14 @@ body {
   }
 
   .header .bijgewerkt {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.15rem;
     font-size: 0.7rem;
+  }
+
+  .header .disclaimer {
+    margin-bottom: 0.3rem;
+    font-size: 0.5rem;
+    max-width: none;
   }
 
   .maanden {
