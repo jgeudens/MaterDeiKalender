@@ -1,11 +1,8 @@
-// Configuratie van de kalenderbron en het schooljaar.
-// Pas GEPUBLICEERDE_KALENDER_URL aan als de school een andere Outlook-link publiceert.
-
-const GEPUBLICEERDE_KALENDER_URL =
-  "https://outlook.office365.com/owa/calendar/9c33be671c99409ab82cabd21ee28279@ozcsvorselaar.be/96af7dec4efa40269c02d75908d63ac07805844575790904765/calendar.html";
-
-// Outlook publiceert naast de .html-weergave altijd ook een .ics-feed op hetzelfde pad.
-export const ICS_URL = GEPUBLICEERDE_KALENDER_URL.replace(/calendar\.html$/, "calendar.ics");
+// Configuratie van het schooljaar en de CORS-proxy's.
+// De kalenderbron zelf wordt niet hier hardcoded, maar bij elke pageload
+// dynamisch opgehaald uit de iframe op https://www.materdeigooreind.be/kalender
+// (zie kalenderUrl.js), zodat de app blijft werken als de school een nieuwe
+// Outlook-link publiceert.
 
 // Gepubliceerde Outlook-kalenders zetten niet altijd CORS-headers, waardoor een
 // rechtstreekse fetch() vanuit de browser kan mislukken. Als fallback proberen we
