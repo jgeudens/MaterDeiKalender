@@ -1,24 +1,16 @@
-// Configuratie van de kalenderbron en het schooljaar.
-// Pas GEPUBLICEERDE_KALENDER_URL aan als de school een andere Outlook-link publiceert.
-
-const GEPUBLICEERDE_KALENDER_URL =
-  "https://outlook.office365.com/owa/calendar/9c33be671c99409ab82cabd21ee28279@ozcsvorselaar.be/96af7dec4efa40269c02d75908d63ac07805844575790904765/calendar.html";
-
-// Outlook publiceert naast de .html-weergave altijd ook een .ics-feed op hetzelfde pad.
-export const ICS_URL = GEPUBLICEERDE_KALENDER_URL.replace(/calendar\.html$/, "calendar.ics");
+// Configuratie van het schooljaar en de proxy.
+// De kalenderbron zelf wordt niet hier hardcoded, maar bij elke pageload
+// dynamisch opgehaald uit de iframe op https://www.materdeigooreind.be/kalender
+// (zie kalenderUrl.js), zodat de app blijft werken als de school een nieuwe
+// Outlook-link publiceert.
 
 // Gepubliceerde Outlook-kalenders zetten niet altijd CORS-headers, waardoor een
-// rechtstreekse fetch() vanuit de browser kan mislukken. Als fallback proberen we
-// een reeks publieke CORS-proxy's, na elkaar, tot er één lukt — gratis proxy's
-// vallen wel eens uit of raten (bv. HTTP 429), dus met meerdere opties na elkaar
-// blijft de kalender werken zolang er minstens één beschikbaar is. Zet op [] om
-// de fallback uit te schakelen, of vervang door een eigen proxy (bv. een
-// serverless function) als geen van deze gratis diensten betrouwbaar blijkt.
-export const CORS_PROXIES = [
-  (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-  (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  (url) => `https://cors.eu.org/${url}`,
-];
+// rechtstreekse fetch() vanuit de browser kan mislukken. Als fallback gaat de
+// fetch via deze same-origin Netlify Function (netlify/functions/kalender-proxy.js),
+// die de schoolwebsite/Outlook-feed server-side ophaalt. Dat is betrouwbaarder dan
+// publieke CORS-proxy's, die vaak uitvallen of raten. Werkt alleen wanneer de app
+// via Netlify draait (of lokaal via `netlify dev`) — zie README.
+export const PROXY_ENDPOINT = "/api/kalender-proxy";
 
 // Het schooljaar loopt van september tot en met juni (geen juli/augustus): 10 maanden.
 export const SCHOOLJAAR_START_MAAND = 9; // september (1 = januari)
