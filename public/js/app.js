@@ -2,14 +2,16 @@ import { PROXY_ENDPOINT, bepaalSchooljaarBereik } from "./config.js";
 import { haalIcsUrlOp } from "./kalenderUrl.js";
 import { haalEventsOp } from "./icsParser.js";
 import { bouwSchooljaarKalender } from "./calendarBuilder.js";
-import { renderHeader, renderMaanden, renderFout } from "./render.js";
+import { renderHeader, renderMaanden, renderFout, renderFooter } from "./render.js";
 
 async function init() {
   const vandaag = new Date();
   const headerEl = document.getElementById("header");
   const maandenEl = document.getElementById("maanden");
+  const footerEl = document.getElementById("footer");
 
   renderHeader(headerEl, vandaag);
+  renderFooter(footerEl);
   maandenEl.innerHTML = `<p class="laden">Kalender wordt geladen...</p>`;
 
   try {
