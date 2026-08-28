@@ -6,25 +6,20 @@ import ICAL from "../vendor/ical.min.js";
 
 const MAX_HERHALINGEN = 2000; // veiligheidsgrens tegen oneindige RRULE-expansie
 
-export async function haalIcsTekstOp(icsUrl, corsProxies = []) {
+export async function haalIcsTekstOp(icsUrl, proxyEndpoint) {
   try {
     const respons = await fetch(icsUrl, { cache: "no-store" });
     if (!respons.ok) throw new Error(`HTTP ${respons.status}`);
     return await respons.text();
   } catch (directeFout) {
-    const fouten = [`directe fetch: ${directeFout.message}`];
-
-    for (const maakProxyUrl of corsProxies) {
-      try {
-        const respons = await fetch(maakProxyUrl(icsUrl), { cache: "no-store" });
-        if (!respons.ok) throw new Error(`HTTP ${respons.status}`);
-        return await respons.text();
-      } catch (proxyFout) {
-        fouten.push(`proxy: ${proxyFout.message}`);
-      }
+    const proxyUrl = `${proxyEndpoint}?url=${encodeURIComponent(icsUrl)}`;
+    const respons = await fetch(proxyUrl, { cache: "no-store" });
+    if (!respons.ok) {
+      throw new Error(
+        `Ophalen van de kalenderfeed via proxy mislukt (HTTP ${respons.status}). Directe fout: ${directeFout.message}`
+      );
     }
-
-    throw new Error(`Ophalen van de kalenderfeed is volledig mislukt (${fouten.join("; ")}).`);
+    return await respons.text();
   }
 }
 
@@ -82,7 +77,7 @@ export function parseIcsNaarEvents(icsTekst, bereikStart, bereikEind) {
   return events;
 }
 
-export async function haalEventsOp(icsUrl, corsProxies, bereikStart, bereikEind) {
-  const icsTekst = await haalIcsTekstOp(icsUrl, corsProxies);
+export async function haalEventsOp(icsUrl, proxyEndpoint, bereikStart, bereikEind) {
+  const icsTekst = await haalIcsTekstOp(icsUrl, proxyEndpoint);
   return parseIcsNaarEvents(icsTekst, bereikStart, bereikEind);
 }

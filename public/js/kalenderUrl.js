@@ -7,32 +7,27 @@ export const KALENDER_PAGINA_URL = "https://www.materdeigooreind.be/kalender";
 
 const IFRAME_SRC_REGEX = /<iframe[^>]*\ssrc=["']([^"']*outlook\.office365\.com[^"']*)["']/i;
 
-async function haalHtmlOp(url, corsProxies = []) {
+async function haalHtmlOp(url, proxyEndpoint) {
   try {
     const respons = await fetch(url, { cache: "no-store" });
     if (!respons.ok) throw new Error(`HTTP ${respons.status}`);
     return await respons.text();
   } catch (directeFout) {
-    const fouten = [`directe fetch: ${directeFout.message}`];
-
-    for (const maakProxyUrl of corsProxies) {
-      try {
-        const respons = await fetch(maakProxyUrl(url), { cache: "no-store" });
-        if (!respons.ok) throw new Error(`HTTP ${respons.status}`);
-        return await respons.text();
-      } catch (proxyFout) {
-        fouten.push(`proxy: ${proxyFout.message}`);
-      }
+    const proxyUrl = `${proxyEndpoint}?url=${encodeURIComponent(url)}`;
+    const respons = await fetch(proxyUrl, { cache: "no-store" });
+    if (!respons.ok) {
+      throw new Error(
+        `Ophalen van kalenderpagina via proxy mislukt (HTTP ${respons.status}). Directe fout: ${directeFout.message}`
+      );
     }
-
-    throw new Error(`Ophalen van de kalenderpagina is volledig mislukt (${fouten.join("; ")}).`);
+    return await respons.text();
   }
 }
 
 // Zoekt de Outlook-iframe op de kalenderpagina en zet de gevonden link
 // (calendar.html) om naar de bijhorende .ics-feed op hetzelfde pad.
-export async function haalIcsUrlOp(corsProxies) {
-  const html = await haalHtmlOp(KALENDER_PAGINA_URL, corsProxies);
+export async function haalIcsUrlOp(proxyEndpoint) {
+  const html = await haalHtmlOp(KALENDER_PAGINA_URL, proxyEndpoint);
 
   const match = html.match(IFRAME_SRC_REGEX);
   if (!match) {

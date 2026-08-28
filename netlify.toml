@@ -1,0 +1,9 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+  command = "npm run build"
+
+[[redirects]]
+  from = "/api/kalender-proxy"
+  to = "/.netlify/functions/kalender-proxy"
+  status = 200
