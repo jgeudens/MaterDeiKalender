@@ -185,9 +185,21 @@ body {
 
   .print-pagina {
     gap: 0.3rem 0.7rem;
+    transform-origin: top left;
   }
 
-  .print-pagina--tweede {
+  /* Vaste hoogte = fysiek afdrukbare hoogte (297mm A4 - 2x 1cm marge uit
+     @page hierboven). Bij overflow knijpt printFit.js de .print-pagina erin
+     via transform: scale() zodat er nooit meer dan 2 bladen ontstaan. Blad 1
+     deelt zijn blad met de header erboven, dus daar trekken we de effectief
+     gemeten headerhoogte van af (--header-hoogte, ingevuld door printFit.js). */
+  .print-pagina-frame {
+    height: calc(277mm - var(--header-hoogte, 0px));
+    overflow: hidden;
+  }
+
+  .print-pagina-frame--tweede {
+    height: 277mm;
     page-break-before: always;
     break-before: page;
   }

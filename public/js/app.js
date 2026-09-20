@@ -3,6 +3,7 @@ import { haalIcsUrlOp } from "./kalenderUrl.js";
 import { haalEventsOp } from "./icsParser.js";
 import { bouwSchooljaarKalender } from "./calendarBuilder.js";
 import { renderHeader, renderMaanden, renderFout, renderFooter } from "./render.js";
+import "./printFit.js";
 
 async function init() {
   const vandaag = new Date();

@@ -64,12 +64,19 @@ function renderMaandKaart(maand) {
   `;
 }
 
-function renderPagina(maanden, extraKlasse) {
-  const klassen = ["print-pagina"];
-  if (extraKlasse) klassen.push(extraKlasse);
+// Elke "pagina" krijgt een frame op vaste (afdruk)hoogte: de inhoud erin wordt
+// vlak voor het afdrukken automatisch verkleind (zie printFit.js) als er meer
+// maanden/events zijn dan er ongeschaald op één blad passen. Zo blijft de
+// belofte "2 bladen" ook gelden bij een drukkere schoolkalender dan waarmee
+// de opmaak initieel getest werd.
+function renderPagina(maanden, isTweedeBlad) {
+  const frameKlassen = ["print-pagina-frame"];
+  if (isTweedeBlad) frameKlassen.push("print-pagina-frame--tweede");
   return `
-    <div class="${klassen.join(" ")}">
-      ${maanden.map(renderMaandKaart).join("")}
+    <div class="${frameKlassen.join(" ")}">
+      <div class="print-pagina">
+        ${maanden.map(renderMaandKaart).join("")}
+      </div>
     </div>
   `;
 }
@@ -78,8 +85,7 @@ export function renderMaanden(container, maanden) {
   const eerstePagina = maanden.slice(0, MAANDEN_PER_PAGINA);
   const tweedePagina = maanden.slice(MAANDEN_PER_PAGINA);
 
-  container.innerHTML =
-    renderPagina(eerstePagina) + renderPagina(tweedePagina, "print-pagina--tweede");
+  container.innerHTML = renderPagina(eerstePagina, false) + renderPagina(tweedePagina, true);
 }
 
 const MAKER_EMAIL = "info@synvis.net";

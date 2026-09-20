@@ -111,6 +111,7 @@ public/
     icsParser.js           Ophalen + parsen van de .ics-feed
     calendarBuilder.js     Bouwt de 10-maanden structuur
     render.js               Rendert header + maandkaarten
+    printFit.js              Verkleint de afdruk automatisch zodat ze op 2 bladen blijft passen
     app.js                   Startpunt, draait bij elke pageload
   vendor/                 Gegenereerd door `npm install` (niet gecommit)
 scripts/
