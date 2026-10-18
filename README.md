@@ -74,6 +74,16 @@ proxy wordt.
 Als zowel de directe fetch als de proxy mislukken, toont de pagina een
 duidelijke Nederlandstalige foutmelding in plaats van stil te falen.
 
+## Filteren op leerjaar
+
+Bovenaan staat een dropdown om op leerjaar (IK, K1-K3, L1-L6) te filteren.
+Events voor een ander leerjaar verdwijnen; algemene events (KS, LS, KS/LS of
+zonder aanduiding) blijven altijd zichtbaar. De keuze komt in de URL
+(`?leerjaar=L3`), zodat de pagina als bladwijzer bewaard of gedeeld kan
+worden, en wordt ook in `localStorage` onthouden. Een expliciete URL-parameter
+wint van de onthouden keuze. De doelgroep wordt afgeleid uit de prefix van de
+titel (zie `public/js/leerjaarFilter.js`).
+
 ## Kalenderbron aanpassen
 
 De kalenderbron wordt automatisch afgeleid uit de iframe op
@@ -111,6 +121,7 @@ public/
     icsParser.js           Ophalen + parsen van de .ics-feed
     calendarBuilder.js     Bouwt de 10-maanden structuur
     render.js               Rendert header + maandkaarten
+    leerjaarFilter.js       Filter op leerjaar (doelgroep uit titelprefix, URL-param)
     printFit.js              Verkleint de afdruk automatisch zodat ze op 2 bladen blijft passen
     app.js                   Startpunt, draait bij elke pageload
   vendor/                 Gegenereerd door `npm install` (niet gecommit)
