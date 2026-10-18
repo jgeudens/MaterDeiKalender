@@ -14,10 +14,11 @@ function formatteerHuidigeDatumTijd(datum) {
   });
 }
 
-export function renderHeader(container, vandaag) {
+export function renderHeader(container, vandaag, leerjaarLabel = "") {
   container.innerHTML = `
     <h1>Jaarkalender Mater Dei</h1>
     <p class="bijgewerkt">Bijgewerkt op: <strong>${formatteerHuidigeDatumTijd(vandaag)}</strong></p>
+    ${leerjaarLabel ? `<p class="bijgewerkt">Gefilterd op: <strong>${escapeHtml(leerjaarLabel)}</strong></p>` : ""}
     <p class="disclaimer">
       Dit is een onofficiële, automatisch samengestelde kalender en is niet goedgekeurd door basisschool Mater Dei.
       De gegevens weerspiegelen enkel de officiële schoolkalender op het
