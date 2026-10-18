@@ -25,6 +25,7 @@ async function init() {
   const footerEl = document.getElementById("footer");
 
   const selectEl = document.getElementById("leerjaar-filter");
+  const wisKnop = document.getElementById("filter-wissen");
   let gekozen = leesGekozenLeerjaar();
   vulLeerjaarSelect(selectEl, gekozen);
 
@@ -45,12 +46,18 @@ async function init() {
     };
     toonKalender();
 
-    selectEl.addEventListener("change", () => {
-      gekozen = selectEl.value;
-      bewaarGekozenLeerjaar(gekozen);
-      renderHeader(headerEl, vandaag, labelVan(gekozen));
+    const pasFilterToe = (code) => {
+      gekozen = code;
+      selectEl.value = code;
+      wisKnop.hidden = !code;
+      bewaarGekozenLeerjaar(code);
+      renderHeader(headerEl, vandaag, labelVan(code));
       toonKalender();
-    });
+    };
+
+    wisKnop.hidden = !gekozen;
+    selectEl.addEventListener("change", () => pasFilterToe(selectEl.value));
+    wisKnop.addEventListener("click", () => pasFilterToe(""));
   } catch (fout) {
     console.error("Kon kalender niet ophalen/parsen:", fout);
     renderFout(maandenEl, fout.message);
