@@ -29,7 +29,7 @@ export function renderHeader(container, vandaag, leerjaarLabel = "") {
   `;
 }
 
-function escapeHtml(tekst) {
+export function escapeHtml(tekst) {
   const div = document.createElement("div");
   div.textContent = tekst;
   return div.innerHTML;

@@ -11,14 +11,14 @@ import {
 } from "./leerjaarFilter.js";
 import "./printFit.js";
 
-function vulLeerjaarSelect(selectEl, gekozen) {
+export function vulLeerjaarSelect(selectEl, gekozen) {
   selectEl.innerHTML =
     `<option value="">Alle leerjaren</option>` +
     LEERJAREN.map((l) => `<option value="${l.code}">${l.label}</option>`).join("");
   selectEl.value = gekozen;
 }
 
-async function init() {
+export async function init() {
   const vandaag = new Date();
   const headerEl = document.getElementById("header");
   const maandenEl = document.getElementById("maanden");

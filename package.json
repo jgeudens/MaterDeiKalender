@@ -6,13 +6,19 @@
   "scripts": {
     "postinstall": "node scripts/copy-vendor.js",
     "build": "node scripts/copy-vendor.js",
-    "start": "http-server public -p 8080 -c-1"
+    "start": "http-server public -p 8080 -c-1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "license": "UNLICENSED",
   "dependencies": {
     "ical.js": "^2.1.0"
   },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "@vitest/coverage-v8": "^5.0.5",
+    "http-server": "^14.1.1",
+    "jsdom": "^29.1.1",
+    "vitest": "^5.0.5"
   }
 }

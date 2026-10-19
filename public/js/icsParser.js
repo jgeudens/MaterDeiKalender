@@ -3,24 +3,12 @@
 // (RRULE) worden uitgebreid binnen het opgegeven datumbereik.
 
 import ICAL from "../vendor/ical.min.js";
+import { haalTekstOp } from "./haalTekstOp.js";
 
 const MAX_HERHALINGEN = 2000; // veiligheidsgrens tegen oneindige RRULE-expansie
 
-export async function haalIcsTekstOp(icsUrl, proxyEndpoint) {
-  try {
-    const respons = await fetch(icsUrl, { cache: "no-store" });
-    if (!respons.ok) throw new Error(`HTTP ${respons.status}`);
-    return await respons.text();
-  } catch (directeFout) {
-    const proxyUrl = `${proxyEndpoint}?url=${encodeURIComponent(icsUrl)}`;
-    const respons = await fetch(proxyUrl, { cache: "no-store" });
-    if (!respons.ok) {
-      throw new Error(
-        `Ophalen van de kalenderfeed via proxy mislukt (HTTP ${respons.status}). Directe fout: ${directeFout.message}`
-      );
-    }
-    return await respons.text();
-  }
+export function haalIcsTekstOp(icsUrl, proxyEndpoint) {
+  return haalTekstOp(icsUrl, proxyEndpoint, "de kalenderfeed");
 }
 
 function naarPlatEvent(titel, startTime, endTime, allDay) {
