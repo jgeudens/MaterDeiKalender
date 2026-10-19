@@ -90,6 +90,19 @@ describe("parseIcsNaarEvents: randgevallen", () => {
     expect(events).toEqual([]);
   });
 
+  it("negeert een event dat eindigt op het begin van het bereik (exclusief einde)", () => {
+    const events = parse(
+      ["DTSTART;VALUE=DATE:20260831", "DTEND;VALUE=DATE:20260901", "SUMMARY:Hele dag"],
+      ["DTSTART:20260831T220000", "DTEND:20260901T000000", "SUMMARY:Tot middernacht"]
+    );
+    expect(events).toEqual([]);
+  });
+
+  it("neemt een event zonder duur op het begin van het bereik op", () => {
+    const [event] = parse(["DTSTART:20260901T000000", "DTEND:20260901T000000", "SUMMARY:Moment"]);
+    expect(event.titel).toBe("Moment");
+  });
+
   it("neemt events op de grenzen van het bereik op", () => {
     const events = parse(
       ["DTSTART;VALUE=DATE:20260901", "DTEND;VALUE=DATE:20260902", "SUMMARY:Eerste"],
@@ -190,6 +203,60 @@ describe("parseIcsNaarEvents: herhalingen", () => {
     ]);
   });
 
+  it("toont herhalingen van een reeks die lang voor het schooljaar startte", () => {
+    const events = parse([
+      "DTSTART;VALUE=DATE:20150101",
+      "DTEND;VALUE=DATE:20150102",
+      "RRULE:FREQ=DAILY",
+      "SUMMARY:Dagelijks",
+    ]);
+    expect(events).toHaveLength(303); // 1 sep 2026 t.e.m. 30 jun 2027
+    expect(events[0].start).toEqual(new Date(2026, 8, 1));
+    expect(events.at(-1).start).toEqual(new Date(2027, 5, 30));
+  });
+
+  it("neemt een herhaling op die voor het bereik start maar erin doorloopt", () => {
+    const events = parse([
+      "DTSTART;VALUE=DATE:20260824",
+      "DTEND;VALUE=DATE:20260903",
+      "RRULE:FREQ=YEARLY",
+      "SUMMARY:Kamp",
+    ]);
+    expect(events.map((e) => e.start)).toEqual([new Date(2026, 7, 24)]);
+  });
+
+  it("vervangt een verplaatste herhaling (RECURRENCE-ID) i.p.v. ze dubbel te tonen", () => {
+    const ics = icsKalender(
+      [
+        "DTSTART:20261006T133000",
+        "DTEND:20261006T150000",
+        "RRULE:FREQ=WEEKLY;COUNT=3",
+        "SUMMARY:Turnen",
+      ],
+      [
+        "RECURRENCE-ID:20261013T133000",
+        "DTSTART:20261015T090000",
+        "DTEND:20261015T100000",
+        "SUMMARY:Turnen (verplaatst)",
+      ]
+    ).replace("UID:inline-1@test", "UID:inline-0@test");
+    const events = parseIcsNaarEvents(ics, START, EIND);
+    expect(events.map((e) => [e.titel, e.start])).toEqual([
+      ["Turnen", new Date(2026, 9, 6, 13, 30)],
+      ["Turnen (verplaatst)", new Date(2026, 9, 15, 9, 0)],
+      ["Turnen", new Date(2026, 9, 20, 13, 30)],
+    ]);
+  });
+
+  it("toont een losse RECURRENCE-ID zonder bijhorende reeks als gewoon event", () => {
+    const [event] = parse([
+      "RECURRENCE-ID:20261013T133000",
+      "DTSTART:20261015T090000",
+      "DTEND:20261015T100000",
+      "SUMMARY:Wees",
+    ]);
+    expect(event).toMatchObject({ titel: "Wees", start: new Date(2026, 9, 15, 9, 0) });
+  });
 });
 
 describe("haalIcsTekstOp / haalEventsOp", () => {
