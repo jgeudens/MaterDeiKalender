@@ -17,7 +17,7 @@ function pasHeaderHoogteAan() {
   );
 }
 
-function pasSchaalToe(frame) {
+export function pasSchaalToe(frame) {
   const inhoud = frame.querySelector(".print-pagina");
   if (!inhoud) return;
 
@@ -40,7 +40,7 @@ export function pasPrintOpmaakAan() {
   document.querySelectorAll(".print-pagina-frame").forEach(pasSchaalToe);
 }
 
-function herstelPrintOpmaak() {
+export function herstelPrintOpmaak() {
   document.querySelectorAll(".print-pagina").forEach((inhoud) => {
     inhoud.style.transform = "none";
   });

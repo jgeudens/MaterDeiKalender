@@ -106,6 +106,19 @@ Kies in het printvenster:
 Controleer in de afdrukvoorbeeld dat de kalender netjes over 2 bladen
 verdeeld is (5 maanden per blad).
 
+## Tests
+
+```bash
+npm test            # alle tests eenmalig
+npm run test:watch  # opnieuw draaien bij elke wijziging
+npm run coverage    # met coverage-rapport (in coverage/)
+```
+
+De tests draaien met [Vitest](https://vitest.dev) in een `jsdom`-omgeving,
+met de tijdzone vast op `Europe/Brussels`. Netwerkverkeer (`fetch`) wordt
+overal gemockt, dus de tests hebben geen internet nodig. GitHub Actions
+draait ze bij elke push en pull request.
+
 ## Projectstructuur
 
 ```
@@ -117,6 +130,7 @@ public/
   css/style.css          Scherm- en printstijlen
   js/
     config.js             Proxy-endpoint, schooljaar-logica
+    haalTekstOp.js         Ophalen met fallback via de proxy
     kalenderUrl.js          Haalt de Outlook-kalenderlink op uit de schoolwebsite
     icsParser.js           Ophalen + parsen van de .ics-feed
     calendarBuilder.js     Bouwt de 10-maanden structuur
@@ -129,4 +143,6 @@ scripts/
   copy-vendor.js          Kopieert ical.js naar public/vendor
 test-fixtures/
   sample.ics               Voorbeeldbestand voor lokaal testen
+tests/                    Vitest-tests (één bestand per module + app.test.js als integratietest)
+vitest.config.mjs         Testconfiguratie
 ```

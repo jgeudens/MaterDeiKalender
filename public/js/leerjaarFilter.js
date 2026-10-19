@@ -82,15 +82,24 @@ function isGeldig(code) {
   return ALLE_CODES.includes(code);
 }
 
+// localStorage kan geblokkeerd zijn (al bij het opvragen); dan null.
+function standaardOpslag() {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
 // Volgorde: URL-parameter, daarna de laatst onthouden keuze, anders alles.
-export function leesGekozenLeerjaar() {
-  const uitUrl = new URLSearchParams(window.location.search).get(URL_PARAM);
+export function leesGekozenLeerjaar(zoekString = window.location.search, opslag = standaardOpslag()) {
+  const uitUrl = new URLSearchParams(zoekString).get(URL_PARAM);
   if (uitUrl !== null) {
     const code = uitUrl.toUpperCase();
     return isGeldig(code) ? code : "";
   }
   try {
-    const bewaard = window.localStorage.getItem(OPSLAG_SLEUTEL);
+    const bewaard = opslag?.getItem(OPSLAG_SLEUTEL);
     if (bewaard && isGeldig(bewaard)) return bewaard;
   } catch {
     // localStorage kan geblokkeerd zijn; de URL volstaat dan.
@@ -98,15 +107,15 @@ export function leesGekozenLeerjaar() {
   return "";
 }
 
-export function bewaarGekozenLeerjaar(code) {
+export function bewaarGekozenLeerjaar(code, opslag = standaardOpslag()) {
   const url = new URL(window.location.href);
   if (code) url.searchParams.set(URL_PARAM, code);
   else url.searchParams.delete(URL_PARAM);
   window.history.replaceState(null, "", url);
 
   try {
-    if (code) window.localStorage.setItem(OPSLAG_SLEUTEL, code);
-    else window.localStorage.removeItem(OPSLAG_SLEUTEL);
+    if (code) opslag?.setItem(OPSLAG_SLEUTEL, code);
+    else opslag?.removeItem(OPSLAG_SLEUTEL);
   } catch {
     // Negeren: bewaren is een gemak, geen vereiste.
   }
